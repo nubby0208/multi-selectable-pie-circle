@@ -1,0 +1,281 @@
+<html>
+
+<head>
+
+    <style>
+        body {
+            background-color: ivory;
+        }
+
+        #canvas {
+            border: 1px solid red;
+        }
+
+        .tooltip {
+            display: inline-block;
+            position: fixed;
+            padding: .5em 1em;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var cw = canvas.width;
+            var ch = canvas.height;
+            ctx.lineWidth = 2;
+            ctx.font = '14px verdana';
+
+            var PI2 = Math.PI * 2;
+            var myColor = ["Green", "Red", "Blue"];
+            var myData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+
+            var radius = 500;
+            var cx = radius + 50;
+            var cy = radius + 50;
+            var pieLevelCount = 9;
+            var radiusUnit = radius / pieLevelCount;
+            var angleUnit = 15;
+
+            ctx.globalAlpha = 0.50;
+            pieChart(myData, myColor);
+            ctx.globalAlpha = 1.00;
+
+            function pieChart(data, colors) {
+                // calc data total
+                var total = 0;
+                for (var i = 0; i < data.length; i++) {
+                    total += data[i];
+                }
+                // calc sweep angles for each piece of pie
+                var sweeps = []
+                for (var i = 0; i < data.length; i++) {
+                    sweeps.push(data[i] / total * PI2);
+                }
+
+                var tempLevel = pieLevelCount;
+                for (var k = 0; k < 9; k++) {
+                    var accumAngle = 0;
+                    for (var i = 0; i < sweeps.length; i++) {
+                        var r = radiusUnit * tempLevel;
+                        var f = pieColorAt(tempLevel);
+                        drawPie(r, accumAngle, accumAngle + sweeps[i], f, data[i]);
+                        accumAngle += sweeps[i];
+                    }
+                    tempLevel--;
+                }
+            }
+
+            function drawPie(radius, startAngle, endAngle, fill, label) {
+                // draw the Pie
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+                ctx.closePath();
+                ctx.fillStyle = fill;
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.stroke();
+            }
+
+            function circleNameOf(index){
+                switch (index) {
+                            case 2:
+                                return 'B';
+                                break;
+                            case 3:
+                                return 'C';
+                                break;
+                            case 4:
+                                return 'D';
+                                break;
+                            case 5:
+                                return 'E';
+                                break;
+                            case 6:
+                                return 'F';
+                                break;
+                            case 7:
+                                return 'G';
+                                break;
+                            case 8:
+                                return 'H';
+                                break;
+                            case 9:
+                                return 'I';
+                                break;
+                            default:
+                                return 'Core';
+                                break;
+                        }
+            }
+
+            function randomColor() {
+                return ('#' + (Math.floor(Math.random() * 0x1000000) + 0x1000000).toString(16).substr(1));
+            }
+
+            function pieColorAt(level) {
+                switch (level) {
+                    case 9:
+                        return '#8c0e5d';
+                        break;
+                    case 8:
+                        return '#97065e';
+                        break;
+                    case 7:
+                        return '#9a025b';
+                        break;
+                    case 6:
+                        return '#a50779';
+                        break;
+                    case 5:
+                        return '#9d0386';
+                        break;
+                    case 4:
+                        return '#94068a';
+                        break;
+                    case 3:
+                        return '#7e0787';
+                        break;
+                    case 2:
+                        return '#620b73';
+                        break;
+                    case 1:
+                        return '#330037';
+                        break;
+                }
+            }
+
+            document.addEventListener('mousemove', onMouseUpdate, false);
+            function onMouseUpdate(e) {
+                x = e.pageX;
+                y = e.pageY;
+
+                var circleName = circleNameOf(isPointWhichCircle(x, y));
+                var angleValue = isPointWhichSector(x, y);
+
+                $("#log").text("pageX: " + x + ", pageY: " + y);
+                $(".tooltip").css({
+                    "left": x + 20,
+                    "top": y - 50,
+                });
+
+                var tooltipContent = circleName + " : " + angleValue;
+                if (circleName == undefined)
+                    tooltipContent = "undefined";
+                document.getElementById("tooltip").textContent = tooltipContent;
+                if (tooltipContent == "undefined")
+                    $(".tooltip").css({
+                        "visibility": 'hidden',
+                    });
+                else
+                    $(".tooltip").css({
+                        "visibility": 'visible',
+                    });
+            }
+
+            document.addEventListener('click', dataPlotUpdate, false);
+            function dataPlotUpdate(e) {
+                x = e.pageX;
+                y = e.pageY;
+
+                var circleIndex = isPointWhichCircle(x, y);
+                var angleValue = isPointWhichSector(x, y);
+                drawPie(circleIndex * radiusUnit, angleValue, angleValue + angleUnit, '#000000', 'aaa');
+
+                var circleName = circleNameOf(circleIndex);
+                console.log(circleName + " : "+angleValue+" has been clicked!");
+            }
+
+            function toDegrees(rad) {
+                return rad * 180 / Math.PI;
+            }
+
+            function isPointWhichSector(x, y) {
+                var startAngle = 0;
+                for (var i = 1; i <= myData.length; i++) {
+                    if (isPointInsideSector(startAngle, x, y)) {
+                        if (startAngle == 0)
+                            return 360;
+                        return startAngle;
+                    } else {
+                        startAngle += angleUnit;
+                    }
+                }
+            }
+
+            function isPointInsideSector(startAngle, x, y) {
+
+                var endAngle = startAngle + angleUnit;
+                let tempX = x - cx;
+                let tempY = y - cy;
+
+                let Angle = toDegrees(Math.atan(tempY / tempX));
+                if (tempY >= 0 && tempX >= 0) {
+                    Angle = 360 - Angle;
+                } else if (tempY >= 0 && tempX <= 0) {
+                    Angle = 180 - Angle;
+                } else if (tempY <= 0 && tempX <= 0) {
+                    Angle = 180 - Angle;
+                } else if (tempY <= 0 && tempX >= 0) {
+                    Angle = -Angle;
+                }
+
+                // console.log(Angle+" : "+startAngle+" : "+endAngle)
+                if (
+                    (Angle >= startAngle) &&
+                    (Angle <= endAngle)
+                )
+                    return true;
+                else
+                    return false;
+            }
+
+            function isPointWhichCircle(x, y) {
+                var tempRadius = radiusUnit;
+                for (var i = 1; i <= pieLevelCount; i++) {
+                    if (isPointInside(tempRadius, x, y)) {
+                        return i;
+                    } else {
+                        tempRadius += radiusUnit;
+                    }
+                }
+            }
+
+            function isPointInside(radius, x, y, startAngle, endAngle) {
+
+                // Calculate polar co-ordinates
+                let tempX = x - cx;
+                let tempY = y - cy;
+                let polarradius = Math.sqrt(tempX * tempX + tempY * tempY);
+                let Angle = Math.atan(tempY / tempX);
+
+                // Check whether polarradius is
+                // less then radius of circle
+                // or not and Angle is between
+                // startAngle and endAngle
+                // or not
+                if (
+                    // (Angle >= startAngle) &&
+                    // (Angle <= endAngle) &&
+                    (polarradius < radius)
+                )
+                    return true;
+                else
+                    return false;
+            }
+
+        };
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <canvas id="canvas" width=1300 height=1100></canvas>
+    <div id="tooltip" class="tooltip">I'm a tooltip!</div>
+
+    <div>
+</body>
+
+</html>
