@@ -40,6 +40,7 @@
             var pieLevelCount = 9;
             var radiusUnit = radius / pieLevelCount;
             var angleUnit = 15;
+            var sweeps = []
 
             ctx.globalAlpha = 0.50;
             pieChart(myData, myColor);
@@ -52,7 +53,6 @@
                     total += data[i];
                 }
                 // calc sweep angles for each piece of pie
-                var sweeps = []
                 for (var i = 0; i < data.length; i++) {
                     sweeps.push(data[i] / total * PI2);
                 }
@@ -60,6 +60,7 @@
                 var tempLevel = pieLevelCount;
                 for (var k = 0; k < 9; k++) {
                     var accumAngle = 0;
+                    // for (var i = 0; i < sweeps.length; i++) {
                     for (var i = 0; i < sweeps.length; i++) {
                         var r = radiusUnit * tempLevel;
                         var f = pieColorAt(tempLevel);
@@ -82,7 +83,7 @@
                 ctx.stroke();
             }
 
-            function circleNameOf(index){
+            function radiusNameOf(index){
                 switch (index) {
                             case 2:
                                 return 'B';
@@ -155,8 +156,8 @@
                 x = e.pageX;
                 y = e.pageY;
 
-                var circleName = circleNameOf(isPointWhichCircle(x, y));
-                var angleValue = isPointWhichSector(x, y);
+                var radiusName = radiusNameOf(isPointWhichCircle(x, y));
+                var angleName = sectorNameOf(isPointWhichSector(x, y));
 
                 $("#log").text("pageX: " + x + ", pageY: " + y);
                 $(".tooltip").css({
@@ -164,8 +165,8 @@
                     "top": y - 50,
                 });
 
-                var tooltipContent = circleName + " : " + angleValue;
-                if (circleName == undefined)
+                var tooltipContent = radiusName + " : " + angleName;
+                if (radiusName == undefined)
                     tooltipContent = "undefined";
                 document.getElementById("tooltip").textContent = tooltipContent;
                 if (tooltipContent == "undefined")
@@ -183,25 +184,30 @@
                 x = e.pageX;
                 y = e.pageY;
 
-                var circleIndex = isPointWhichCircle(x, y);
-                var angleValue = isPointWhichSector(x, y);
-                drawPie(circleIndex * radiusUnit, angleValue, angleValue + angleUnit, '#000000', 'aaa');
+                var radiusIndex = isPointWhichCircle(x, y);
+                var angleIndex = isPointWhichSector(x, y);
 
-                var circleName = circleNameOf(circleIndex);
-                console.log(circleName + " : "+angleValue+" has been clicked!");
+                drawPie(radiusIndex * radiusUnit, sweeps[0]*(sweeps.length -angleIndex - 1), sweeps[0] * (sweeps.length - angleIndex), '#000000', 'aaa');
+
+                var radiusName = radiusNameOf(radiusIndex);
+                console.log(radiusIndex + "th radius: "+angleIndex+"th sector has been clicked!");
             }
 
             function toDegrees(rad) {
                 return rad * 180 / Math.PI;
             }
 
+            function sectorNameOf(index){
+                if(index == 0)
+                    return 360;
+                return index * 15;
+            }
+
             function isPointWhichSector(x, y) {
                 var startAngle = 0;
-                for (var i = 1; i <= myData.length; i++) {
+                for (var i = 0; i < myData.length; i++) {
                     if (isPointInsideSector(startAngle, x, y)) {
-                        if (startAngle == 0)
-                            return 360;
-                        return startAngle;
+                        return i;
                     } else {
                         startAngle += angleUnit;
                     }
