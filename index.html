@@ -33,49 +33,75 @@
             var PI2 = Math.PI * 2;
             var myColor = ["Green", "Red", "Blue"];
             var myData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+            var pieColors = [];
+            initPieColors();
+            var UNDEFINED = "undefiend!";
+            var selectedColor = "#000000";
 
             var radius = 500;
             var cx = radius + 50;
             var cy = radius + 50;
-            var pieLevelCount = 9;
-            var radiusUnit = radius / pieLevelCount;
+            var wedgeLevelCount = 9;
+            var radiusUnit = radius / wedgeLevelCount;
             var angleUnit = 15;
             var sweeps = []
 
             ctx.globalAlpha = 0.50;
-            pieChart(myData, myColor);
+            wedgeChart(myData, myColor);
             ctx.globalAlpha = 1.00;
 
-            function pieChart(data, colors) {
+            function initPieColors(){
+                pieColors[8] = ['#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', ];
+                pieColors[7] = ['#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', ];
+                pieColors[6] = ['#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', ];
+                pieColors[5] = ['#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', ];
+                pieColors[4] = ['#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', ];
+                pieColors[3] = ['#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', ];
+                pieColors[2] = ['#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', ];
+                pieColors[1] = ['#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', ];
+                pieColors[0] = ['#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', ];
+            }
+
+            function wedgeChart(data, colors) {
                 // calc data total
                 var total = 0;
                 for (var i = 0; i < data.length; i++) {
                     total += data[i];
                 }
-                // calc sweep angles for each piece of pie
+                // calc sweep angles for each wedgece of wedge
                 for (var i = 0; i < data.length; i++) {
                     sweeps.push(data[i] / total * PI2);
                 }
 
-                var tempLevel = pieLevelCount;
-                for (var k = 0; k < 9; k++) {
+                for (var k = wedgeLevelCount; k > 0; k--) {
                     var accumAngle = 0;
                     // for (var i = 0; i < sweeps.length; i++) {
                     for (var i = 0; i < sweeps.length; i++) {
-                        var r = radiusUnit * tempLevel;
-                        var f = pieColorAt(tempLevel);
-                        drawPie(r, accumAngle, accumAngle + sweeps[i], f, data[i]);
+                        var r = radiusUnit * k;
+                        var f = pieColorAt(k, 1);
+                        drawWedge(r, accumAngle, accumAngle + sweeps[i], f, data[i]);
                         accumAngle += sweeps[i];
                     }
-                    tempLevel--;
                 }
             }
 
-            function drawPie(radius, startAngle, endAngle, fill, label) {
-                // draw the Pie
+            function drawPie(radiusIndex, angleIndex, fill, label){
+                drawWedge(radiusIndex * radiusUnit, sweeps[0]*(sweeps.length -angleIndex - 1), sweeps[0] * (sweeps.length - angleIndex), fill, label);
+                pieColors[radiusIndex-1][angleIndex-1] = fill;
+                for (var k = radiusIndex - 1; k > 0; k--) {
+                        var r = radiusUnit * k;
+                        var f = pieColorAt(k, angleIndex);
+                        drawWedge(r, sweeps[0]*(sweeps.length -angleIndex - 1), sweeps[0] * (sweeps.length - angleIndex), f, label);
+                }
+            }
+
+            function drawWedge(radius, startAngle, endAngle, fill, label) {
+                // draw the Wedge
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
+                
                 ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+                
                 ctx.closePath();
                 ctx.fillStyle = fill;
                 ctx.fill();
@@ -85,6 +111,9 @@
 
             function radiusNameOf(index){
                 switch (index) {
+                            case 1:
+                                return 'core';
+                                break;
                             case 2:
                                 return 'B';
                                 break;
@@ -110,7 +139,7 @@
                                 return 'I';
                                 break;
                             default:
-                                return 'Core';
+                                return UNDEFINED;
                                 break;
                         }
             }
@@ -119,36 +148,10 @@
                 return ('#' + (Math.floor(Math.random() * 0x1000000) + 0x1000000).toString(16).substr(1));
             }
 
-            function pieColorAt(level) {
-                switch (level) {
-                    case 9:
-                        return '#8c0e5d';
-                        break;
-                    case 8:
-                        return '#97065e';
-                        break;
-                    case 7:
-                        return '#9a025b';
-                        break;
-                    case 6:
-                        return '#a50779';
-                        break;
-                    case 5:
-                        return '#9d0386';
-                        break;
-                    case 4:
-                        return '#94068a';
-                        break;
-                    case 3:
-                        return '#7e0787';
-                        break;
-                    case 2:
-                        return '#620b73';
-                        break;
-                    case 1:
-                        return '#330037';
-                        break;
-                }
+
+
+            function pieColorAt(radiusIndex, angleIndex) {
+                return pieColors[radiusIndex -1][angleIndex -1];
             }
 
             document.addEventListener('mousemove', onMouseUpdate, false);
@@ -166,10 +169,10 @@
                 });
 
                 var tooltipContent = radiusName + " : " + angleName;
-                if (radiusName == undefined)
-                    tooltipContent = "undefined";
+                if (radiusName == UNDEFINED)
+                    tooltipContent = UNDEFINED;
                 document.getElementById("tooltip").textContent = tooltipContent;
-                if (tooltipContent == "undefined")
+                if (tooltipContent == UNDEFINED)
                     $(".tooltip").css({
                         "visibility": 'hidden',
                     });
@@ -187,7 +190,7 @@
                 var radiusIndex = isPointWhichCircle(x, y);
                 var angleIndex = isPointWhichSector(x, y);
 
-                drawPie(radiusIndex * radiusUnit, sweeps[0]*(sweeps.length -angleIndex - 1), sweeps[0] * (sweeps.length - angleIndex), '#000000', 'aaa');
+                drawPie(radiusIndex, angleIndex, selectedColor, 'aaa');
 
                 var radiusName = radiusNameOf(radiusIndex);
                 console.log(radiusIndex + "th radius: "+angleIndex+"th sector has been clicked!");
@@ -243,7 +246,7 @@
 
             function isPointWhichCircle(x, y) {
                 var tempRadius = radiusUnit;
-                for (var i = 1; i <= pieLevelCount; i++) {
+                for (var i = 1; i <= wedgeLevelCount; i++) {
                     if (isPointInside(tempRadius, x, y)) {
                         return i;
                     } else {
