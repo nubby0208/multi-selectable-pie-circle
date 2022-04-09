@@ -34,6 +34,7 @@
             var myColor = ["Green", "Red", "Blue"];
             var myData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
             var pieColors = [];
+            var defaultPieColors = [];
             initPieColors();
             var UNDEFINED = "undefiend!";
             var selectedColor = "#000000";
@@ -60,6 +61,16 @@
                 pieColors[2] = ['#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', ];
                 pieColors[1] = ['#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', ];
                 pieColors[0] = ['#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', ];
+
+                defaultPieColors[8] = ['#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', '#8c0e5d', ];
+                defaultPieColors[7] = ['#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', '#97065e', ];
+                defaultPieColors[6] = ['#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', '#9a025b', ];
+                defaultPieColors[5] = ['#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', '#a50779', ];
+                defaultPieColors[4] = ['#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', '#9d0386', ];
+                defaultPieColors[3] = ['#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', '#94068a', ];
+                defaultPieColors[2] = ['#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', '#7e0787', ];
+                defaultPieColors[1] = ['#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', '#620b73', ];
+                defaultPieColors[0] = ['#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', '#330037', ];
             }
 
             function wedgeChart(data, colors) {
@@ -86,8 +97,10 @@
             }
 
             function drawPie(radiusIndex, angleIndex, fill, label){
+                
                 drawWedge(radiusIndex * radiusUnit, sweeps[0]*(sweeps.length -angleIndex - 1), sweeps[0] * (sweeps.length - angleIndex), fill, label);
-                pieColors[radiusIndex-1][angleIndex-1] = fill;
+                pieColors[radiusIndex-1][angleIndex] = fill;
+                
                 for (var k = radiusIndex - 1; k > 0; k--) {
                         var r = radiusUnit * k;
                         var f = pieColorAt(k, angleIndex);
@@ -151,7 +164,7 @@
 
 
             function pieColorAt(radiusIndex, angleIndex) {
-                return pieColors[radiusIndex -1][angleIndex -1];
+                return pieColors[radiusIndex -1][angleIndex];
             }
 
             document.addEventListener('mousemove', onMouseUpdate, false);
@@ -190,9 +203,15 @@
                 var radiusIndex = isPointWhichCircle(x, y);
                 var angleIndex = isPointWhichSector(x, y);
 
-                drawPie(radiusIndex, angleIndex, selectedColor, 'aaa');
-
                 var radiusName = radiusNameOf(radiusIndex);
+                if(radiusName == UNDEFINED)
+                    return;
+                if(pieColorAt(radiusIndex, angleIndex) == selectedColor){
+                    drawPie(radiusIndex, angleIndex, defaultPieColors[radiusIndex-1][angleIndex], 'aaa');
+                }
+                else{
+                    drawPie(radiusIndex, angleIndex, selectedColor, 'aaa');
+                }
                 console.log(radiusIndex + "th radius: "+angleIndex+"th sector has been clicked!");
             }
 
