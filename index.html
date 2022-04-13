@@ -163,6 +163,8 @@
         function getIntersectedPiePolygons(dragedRectangle) {
             for (var i = 2; i <= wedgeLevelCount; i++) {
                 for (var j = 0; j < sweeps.length; j++) {
+                    if(pies[i][j] == null)
+                        continue;
                     var intersectedArea = intersect(dragedRectangle, pies[i][j].polygon);
                     if (intersectedArea[0] === undefined) {
                     }
@@ -411,7 +413,8 @@
             //multi select
             else {
                 var dragedRectangle = [{ x: downX, y: downY }, { x: downX, y: upY }, { x: upX, y: upY }, { x: upX, y: downY }];
-                getIntersectedPiePolygons(dragedRectangle);
+                if (!(downX == upX || downY == upY))
+                    getIntersectedPiePolygons(dragedRectangle);
             }
             redraw();
 
